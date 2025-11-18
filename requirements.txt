@@ -9,7 +9,7 @@ python-docx
 chardet
 email-validator
 pydantic
-autumn
+autumn-py
 resend
 langchain
 langgraph
