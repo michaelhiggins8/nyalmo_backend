@@ -6,7 +6,6 @@ supabase
 openai
 PyPDF2
 python-docx
-python-magic-bin
 chardet
 email-validator
 pydantic
