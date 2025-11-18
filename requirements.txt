@@ -15,4 +15,4 @@ langchain
 langgraph
 langchain_core
 langgraph-checkpoint-postgres
-langchain-openai
+
