@@ -55,9 +55,9 @@ def refresh_org_key(credentials = Depends(security)):
                             "org_key": new_org_key[0]
                         }
                 except Exception as rpc_error:
-                    # If RPC fails, fallback to manual update
+                    # If RPC fails, rollback the transaction before continuing
                     print(f"RPC failed, using fallback: {rpc_error}")
-                    pass
+                    conn.rollback()
                 
                 # Fallback: Generate new UUID and update manually
                 new_uuid = str(uuid.uuid4())
