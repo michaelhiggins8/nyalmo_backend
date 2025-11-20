@@ -11,6 +11,7 @@ from routes.chat_routes.fetch_threads import router as fetch_threads_router
 from routes.billing_routes.make_url import router as make_url_router
 from routes.billing_routes.billing_portal import router as billing_portal_router
 from routes.billing_routes.check_plan import router as check_plan_router
+from routes.billing_routes.check_customer_facts import router as check_customer_facts_router
 from routes.auth_routes.check_if_board import router as check_if_board_router
 from routes.auth_routes.check_if_subscribed import router as check_if_subscribed_router
 from routes.auth_routes.orgid_from_key import router as orgid_from_key_router
@@ -23,5 +24,5 @@ from routes.auth_routes.change_password import router as change_password_router
 from routes.Rulings_routes.fetch_rulings import router as fetch_rulings_router
 from routes.share_routes.get_org_key import router as get_org_key_router
 from routes.share_routes.refresh_org_key import router as refresh_org_key_router
-routers = [test_router, upload_docs_router, serve_document_router, delete_documents_router, get_documents_router, make_ruling_router, fetch_mails_router, collect_thread_router, delete_thread_router, fetch_threads_router, make_url_router, billing_portal_router, check_plan_router, check_if_board_router, check_if_subscribed_router, orgid_from_key_router, signup_router, signin_router, signout_router, reset_password_router, session_router, change_password_router, fetch_rulings_router, get_org_key_router, refresh_org_key_router]
+routers = [test_router, upload_docs_router, serve_document_router, delete_documents_router, get_documents_router, make_ruling_router, fetch_mails_router, collect_thread_router, delete_thread_router, fetch_threads_router, make_url_router, billing_portal_router, check_plan_router, check_customer_facts_router, check_if_board_router, check_if_subscribed_router, orgid_from_key_router, signup_router, signin_router, signout_router, reset_password_router, session_router, change_password_router, fetch_rulings_router, get_org_key_router, refresh_org_key_router]
 

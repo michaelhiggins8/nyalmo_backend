@@ -7,18 +7,23 @@ import uuid
 import os
 from dotenv import load_dotenv
 
+from autumn import Autumn
+
+
+
+
 load_dotenv()
 
 router = APIRouter()
 autumn = Autumn(os.getenv("AUTUMN_KEY"))
 
-class CheckSubscribedRequest(BaseModel):
+class CheckCustomerFactRequest(BaseModel):
     customer_id: str
 
 security = HTTPBearer(auto_error=False)
 
-@router.post("/check_if_subscribed")
-async def check_if_subscribed(request: CheckSubscribedRequest, credentials=Depends(security)):
+@router.post("/check_customer_facts")
+async def check_customer_facts(request: CheckCustomerFactRequest, credentials=Depends(security)):
     '''
     # Validate token
     token = credentials.credentials if (credentials and credentials.credentials not in ["undefined", "null"]) else None
@@ -37,15 +42,23 @@ async def check_if_subscribed(request: CheckSubscribedRequest, credentials=Depen
 
 
     try:
-        # Directly await the autumn check call
-        response = await autumn.check(
+
+
+        response = await autumn.customers.get(
             customer_id=request.customer_id,
-            product_id='standard'  
         )
 
+
+
+
+
+
+
+
+
         # Return the allowed status from the autumn response
-        return {"allowed": response.allowed}
+        return {"started_at": response.products[0].started_at,"households":response.features["houses"].included_usage}
 
     except Exception as e:
-        return {"allowed": "error"}
+        return {"started_at": "error"}
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
