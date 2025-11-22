@@ -189,4 +189,60 @@ def check_if_logged_in(user_id: Annotated[Optional[Union[str, UUID]], InjectedSt
 
 
 
-tool_list = [send_message_to_the_board, make_account, get_rules,check_if_logged_in]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@tool
+def get_portal_facts(config: RunnableConfig) -> str:
+    """
+    Will return the foreign portal link and message mode for the organization **If in foreign portal mode**
+
+    Args:
+        config: Configuration containing org_id
+    """
+    org_id = config["configurable"]["org_id"]
+
+    with pool.connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute("SELECT foreign_portal_link, message_mode FROM orgs WHERE id = %s", (org_id,))
+            results = cur.fetchone()
+
+        if not results:
+            return "No relevant rules or documents found for the given query."
+
+        foreign_portal_link, message_mode = results
+        if message_mode == "foreign_portal":
+            return f"(foreign portal mode) The portal url for the organization is {foreign_portal_link}"
+        else:
+            return "(local portal mode) The organization does not have a foreign portal use the `send_message_to_the_board` tool"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+tool_list = [send_message_to_the_board, make_account, get_rules,check_if_logged_in, get_portal_facts]

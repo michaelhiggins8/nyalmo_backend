@@ -164,15 +164,12 @@ async def upload_docs(file: UploadFile = File(...), credentials=Depends(security
         claims = supabase.auth.get_claims(token)
         user_id = uuid.UUID(claims["claims"]["sub"])  # Get user ID from token
     except Exception as e:
-        print(f"Token is invalid: {e}")
         raise HTTPException(status_code=401, detail="Invalid token")
     
-
     # Get org_id from database
     try:
         with pool.connection() as conn:
             with conn.cursor() as cur:
-                # First, try to get org_id from org_userships (for members)
                 cur.execute(
                     "SELECT org_id FROM org_userships WHERE user_id = %s LIMIT 1",
                     (user_id,)
@@ -186,7 +183,6 @@ async def upload_docs(file: UploadFile = File(...), credentials=Depends(security
     except HTTPException:
         raise
     except Exception as e:
-        print(f"Error fetching org_id: {e}")
         raise HTTPException(status_code=500, detail=f"Error fetching organization: {str(e)}")
 
     # Read file content
@@ -203,7 +199,6 @@ async def upload_docs(file: UploadFile = File(...), credentials=Depends(security
     if not text:
         raise HTTPException(status_code=400, detail="No text could be extracted from the file")
     
-
     # Chunk the text
     chunks = chunk_text(text)
     
@@ -212,14 +207,12 @@ async def upload_docs(file: UploadFile = File(...), credentials=Depends(security
 
     # Create embeddings for all chunks
     try:
-        # Batch the embedding creation for efficiency
         response = client.embeddings.create(
             input=chunks,
             model="text-embedding-3-small"
         )
         embeddings = [item.embedding for item in response.data]
     except Exception as e:
-        print(f"Error creating embeddings: {e}")
         raise HTTPException(status_code=500, detail=f"Error creating embeddings: {str(e)}")
 
     # Generate unique file path for storage
@@ -227,22 +220,10 @@ async def upload_docs(file: UploadFile = File(...), credentials=Depends(security
     file_path = f"/{org_id}/{file_uuid}_{file.filename}"
     bucket_name = "documents"
 
-
-#create 'document' table entry 
-
-
-
-
-
-
-
     # Insert all chunks into database efficiently using batch insert
     try:
         with pool.connection() as conn:
             with conn.cursor() as cur:
-
-
-
                 #make 'document' table entry
                 cur.execute("INSERT INTO documents (org_id, file_path) VALUES  (%s, %s)", (org_id, file_path))
 
@@ -263,12 +244,10 @@ async def upload_docs(file: UploadFile = File(...), credentials=Depends(security
                 conn.commit()
                 
     except Exception as e:
-        print(f"Error inserting into database: {e}")
         raise HTTPException(status_code=500, detail=f"Error inserting into database: {str(e)}")
 
     # Upload file to Supabase storage
     try:
-        # Upload to Supabase storage
         storage_result = supabase.storage.from_(bucket_name).upload(
             file_path,
             file_content,
@@ -278,9 +257,6 @@ async def upload_docs(file: UploadFile = File(...), credentials=Depends(security
             }
         )
     except Exception as e:
-        print(f"Error uploading to storage: {e}")
-        # Note: We don't rollback database inserts here, as the embeddings are still valid
-        # You might want to implement cleanup logic based on your requirements
         raise HTTPException(status_code=500, detail=f"Error uploading file to storage: {str(e)}")
 
     return {
