@@ -34,6 +34,7 @@ async def get_documents(
     try:
         claims = supabase.auth.get_claims(token)
         user_id = uuid.UUID(claims["claims"]["sub"])
+        print("user_id000000000000", user_id)
     except Exception as e:
         print(f"Token is invalid: {e}")
         raise HTTPException(status_code=401, detail="Invalid token")
@@ -53,6 +54,7 @@ async def get_documents(
                     raise HTTPException(status_code=404, detail="Organization not found for this user")
                 
                 org_id = result[0]
+                print("org_id000000000000", org_id)
     except HTTPException:
         raise
     except Exception as e:

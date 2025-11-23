@@ -24,7 +24,7 @@ async def fetch_mails(
     Args:
         page: Page number (0-indexed)
         page_size: Number of mails per page (default 10)
-        label: Optional label filter (e.g., 'change_request', 'violation_report', 'general')
+        label: Optional label filter (e.g., 'change_request', 'violation_report', 'general_message')
         credentials: JWT token for authentication
         
     Returns:
