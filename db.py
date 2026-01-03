@@ -1,9 +1,10 @@
 # db.py
-#import os
+import os
 from psycopg_pool import ConnectionPool
+from dotenv import load_dotenv
+load_dotenv()
 
-#DATABASE_URL = os.environ["DATABASE_URL"]  # Supabase pooled URL (port 6543)
-DATABASE_URL = "postgresql://postgres.ckazdosbbrioczxpszlw:06EdnNL6Pi6PnG6U@aws-1-us-east-1.pooler.supabase.com:6543/postgres"
+DATABASE_URL = os.environ.get("DATABASE_URL")  
 
 pool = ConnectionPool(
     conninfo=DATABASE_URL,
